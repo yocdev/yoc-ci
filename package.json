@@ -1,0 +1,15 @@
+{
+  "name": "yoc-ci",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "yoc-ci": "bin/yoc-ci.js"
+  },
+  "dependencies": {
+    "commander": "^2.12.2",
+    "properties-reader": "^0.0.16",
+    "qiniu": "^7.1.1",
+    "shelljs": "^0.7.8"
+  }
+}
