@@ -8,10 +8,13 @@ async function build(buildType, clean) {
   await _execGradleCmd(buildType, clean)
 
   const apkName = await _getApkName(properties.appName, buildType, properties.versionName)
-  shell.mv(
+  const result = await shell.mv(
     _apkFullPath(`app-${buildType}.apk`),
     apkName
   )
+  if (result.code != 0) {
+    process.exit(1)
+  }
 }
 
 async function _decryptKeystore() {
@@ -22,7 +25,6 @@ async function _decryptKeystore() {
   -md md5 \
   -out release.keystore
   `)
-  console.log(result)
   if (result.code != 0) {
     process.exit(1)
   }
@@ -34,7 +36,10 @@ async function _execGradleCmd(buildType, clean) {
     cmd += ' clean'
   }
   cmd += ` assemble${_capitalize(buildType)}`
-  await shell.exec(cmd)
+  const result = await shell.exec(cmd)
+  if (result.code != 0) {
+    process.exit(1)
+  }
 }
 
 function _apkFullPath(apkName) {
