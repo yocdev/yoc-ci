@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-const upload = require('./upload')
+const path = require('path')
+const upload = require('../src/uploader/qiniu')
 const program = require('commander')
 
 program
-  .arguments('<platform> <file>')
-  .action((platform, file) => {
-    upload(platform, file)
+  .arguments('<platform> <buildType> <file>')
+  .action((platform, buildType, file) => {
+    const filePath = path.resolve(process.cwd(), file)
+    upload(platform, buildType, filePath)
   })
   .parse(process.argv)

@@ -2,7 +2,9 @@ const shell = require('shelljs')
 
 async function getVersionCode() {
   const result = await shell.exec('git rev-list --first-parent --count $(git rev-parse --abbrev-ref HEAD)')
-  return result.stdout.trim()
+  const versionCode = result.stdout.trim()
+
+  return versionCode
 }
 
 async function getVersionName() {
