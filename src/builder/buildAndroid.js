@@ -4,16 +4,24 @@ const getAndroidProperties = require('../util/getAndroidProperties')
 async function build(buildType, clean) {
   const properties = await getAndroidProperties(buildType)
 
-  _execGradleCmd(buildType, clean)
+  await _decryptKeystore()
+  await _execGradleCmd(buildType, clean)
 
   const apkName = await _getApkName(properties.appName, buildType, properties.versionName)
-  const appPath = _apkFullPath(apkName)
   shell.mv(
     _apkFullPath(`app-${buildType}.apk`),
-    appPath
+    apkName
   )
+}
 
-  console.log(appPath)
+async function _decryptKeystore() {
+  await shell.exec(`
+  openssl enc -d -aes-256-cbc \
+  -pass "pass:${process.env.ANDROID_KEYSTORE_PASS}" \
+  -in keystores/me-youchai-bmb.jks.enc \
+  -md md5 \
+  -out release.keystore
+  `)
 }
 
 function _execGradleCmd(buildType, clean) {
