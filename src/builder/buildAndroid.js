@@ -15,22 +15,26 @@ async function build(buildType, clean) {
 }
 
 async function _decryptKeystore() {
-  await shell.exec(`
+  const result = await shell.exec(`
   openssl enc -d -aes-256-cbc \
   -pass "pass:${process.env.ANDROID_KEYSTORE_PASS}" \
-  -in keystores/me-youchai-bmb.jks.enc \
+  -in keystores/jellyfish.jks.enc \
   -md md5 \
   -out release.keystore
   `)
+  console.log(result)
+  if (result.code != 0) {
+    process.exit(1)
+  }
 }
 
-function _execGradleCmd(buildType, clean) {
+async function _execGradleCmd(buildType, clean) {
   let cmd = './gradlew'
   if (clean) {
     cmd += ' clean'
   }
   cmd += ` assemble${_capitalize(buildType)}`
-  shell.exec(cmd)
+  await shell.exec(cmd)
 }
 
 function _apkFullPath(apkName) {
