@@ -16,6 +16,8 @@ async function build(buildType, clean) {
   if (result.code != 0) {
     process.exit(1)
   }
+
+  console.log('build apk:', `${process.cwd()}/${apkName}`)
 }
 
 async function _decryptKeystore() {

@@ -1,5 +1,6 @@
 const qiniu = require('qiniu')
 const getAndroidProperties = require('../util/getAndroidProperties')
+const path = require('path')
 
 function _uptoken (bucket, key) {
   const accessKey = process.env.QINIU_ACCESS_KEY
@@ -38,18 +39,23 @@ function _doUpload(bucket, file, fileName) {
   })
 }
 
-async function upload(platform, buildType, file) {
+async function upload(platform, buildType) {
   let appFileName
   if (platform === 'android') {
     const { appName, versionName } = await getAndroidProperties(buildType)
-    appFileName = `${appName}-${versionName}.apk`
+    appFileName = `${appName}-${buildType}-${versionName}.apk`
   }
 
   if (!appFileName) {
     throw 'app file name not found'
   }
 
-  _doUpload('yocdownload', file, appFileName)
+  try {
+    _doUpload('yocdownload', path.resolve(process.cwd(), appFileName), appFileName)
+  } catch (e) {
+    console.error(e)
+    process.exit(1)
+  }
 }
 
 module.exports = upload
