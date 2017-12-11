@@ -5,6 +5,7 @@ async function build(buildType, clean) {
   const properties = await getAndroidProperties(buildType)
 
   await _decryptKeystore()
+  await _agreeLicense()
   await _execGradleCmd(buildType, clean)
 
   const apkName = await _getApkName(properties.appName, buildType, properties.versionName)
@@ -28,6 +29,14 @@ async function _decryptKeystore() {
   if (result.code != 0) {
     process.exit(1)
   }
+}
+
+async function _agreeLicense() {
+  await shell.mkdir('-p "$ANDROID_SDK/licenses"')
+  await shell.echo('-e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_SDK/licenses/android-sdk-license"')
+  await shell.echo('-e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_SDK/licenses/android-sdk-preview-license"')
+  await shell.ls('"$ANDROID_SDK/licenses"')
+  await shell.cat('"$ANDROID_SDK/licenses/android-sdk-license"')
 }
 
 async function _execGradleCmd(buildType, clean) {
