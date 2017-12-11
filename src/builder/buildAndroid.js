@@ -32,11 +32,16 @@ async function _decryptKeystore() {
 }
 
 async function _agreeLicense() {
-  await shell.mkdir('-p "$ANDROID_SDK/licenses"')
-  await shell.echo('-e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_SDK/licenses/android-sdk-license"')
-  await shell.echo('-e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_SDK/licenses/android-sdk-preview-license"')
-  await shell.ls('"$ANDROID_SDK/licenses"')
-  await shell.cat('"$ANDROID_SDK/licenses/android-sdk-license"')
+  const result = await shell.exec(`
+    mkdir -p "$ANDROID_SDK/licenses"
+    echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_SDK/licenses/android-sdk-license"
+    echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_SDK/licenses/android-sdk-preview-license"
+    ls "$ANDROID_SDK/licenses"
+    cat "$ANDROID_SDK/licenses/android-sdk-license"
+  `)
+  if (result.code != 0) {
+    process.exit(1)
+  }
 }
 
 async function _execGradleCmd(buildType, clean) {
