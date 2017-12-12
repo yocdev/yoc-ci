@@ -1,11 +1,14 @@
 const shell = require('shelljs')
 const getAndroidProperties = require('../util/getAndroidProperties')
 
-async function build(buildType, clean) {
+async function build(buildType, options) {
   const properties = await getAndroidProperties(buildType)
+  const { clean, skipLicense } = options
 
   await _decryptKeystore()
-  await _agreeLicense()
+  if (!skipLicense) {
+    await _agreeLicense()
+  }
   await _execGradleCmd(buildType, clean)
 
   const apkName = await _getApkName(properties.appName, buildType, properties.versionName)

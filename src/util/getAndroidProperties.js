@@ -7,11 +7,13 @@ async function getAndroidProperties(buildType) {
   const versionName = await version.getVersionName()
   const versionCode = await version.getVersionCode()
   const appName = properties.get('APP_NAME')
+  const bundleId = properties.get('BUNDLE_ID')
 
   const result = {
     appName,
     versionName,
-    versionCode
+    versionCode,
+    bundleId
   }
 
   for (const key in result) {

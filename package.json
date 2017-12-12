@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "commander": "^2.12.2",
+    "node-fetch": "^1.7.3",
     "properties-reader": "^0.0.16",
     "qiniu": "^7.1.1",
     "shelljs": "^0.7.8"
