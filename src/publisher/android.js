@@ -9,6 +9,12 @@ async function publish() {
   if (!process.env.DOWNLOAD_HOST) {
     throw 'process.env.DOWNLOAD_HOST not found'
   }
+  if (!process.env.PUBLISH_API_URL) {
+    throw 'process.env.PUBLISH_API_URL not found'
+  }
+  if (!process.env.APP_SERVICE_TOKEN) {
+    throw 'process.env.APP_SERVICE_TOKEN not found'
+  }
 
   const fileName = `${properties.appName}-release-${properties.versionName}.apk`
   const apkFile = path.resolve(process.cwd(), fileName)
