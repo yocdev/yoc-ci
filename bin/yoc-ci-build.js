@@ -7,10 +7,10 @@ const buildAndroid = require('../src/builder/buildAndroid')
 program
   .option('-c, --clean', 'clean')
   .option('--skip-license', 'skip license')
-  .arguments('<platform> <buildType>')
-  .action((platform, buildType) => {
+  .arguments('<platform> <buildType> [flavor]')
+  .action((platform, buildType, flavor) => {
     if (platform === 'android') {
-      buildAndroid(buildType, {
+      buildAndroid(buildType, flavor, {
         clean: program.clean,
         skipLicense: program.skipLicense
       }).catch((e) => {

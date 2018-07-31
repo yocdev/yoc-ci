@@ -1,7 +1,7 @@
 const shell = require('shelljs')
 const getAndroidProperties = require('../util/getAndroidProperties')
 
-async function build(buildType, options) {
+async function build(buildType, flavor, options) {
   const properties = await getAndroidProperties(buildType)
   const { clean, skipLicense } = options
 
@@ -9,11 +9,17 @@ async function build(buildType, options) {
   if (!skipLicense) {
     await _agreeLicense()
   }
-  await _execGradleCmd(buildType, clean)
+  await _execGradleCmd(buildType, flavor, clean)
 
-  const apkName = await _getApkName(properties.appName, buildType, properties.versionName)
+  const apkName = await _getApkName(properties.appName, buildType, flavor, properties.versionName)
+  let buildedApkName
+  if (flavor) {
+    buildedApkName = `app-${flavor}-${buildType}.apk`
+  } else {
+    buildedApkName = `app-${buildType}.apk`
+  }
   const result = await shell.mv(
-    _apkFullPath(`app-${buildType}.apk`),
+    _apkFullPath(buildedApkName),
     apkName
   )
   if (result.code != 0) {
@@ -49,12 +55,16 @@ async function _agreeLicense() {
   }
 }
 
-async function _execGradleCmd(buildType, clean) {
+async function _execGradleCmd(buildType, flavor, clean) {
   let cmd = './gradlew'
   if (clean) {
     cmd += ' clean'
   }
-  cmd += ` assemble${_capitalize(buildType)}`
+  if (flavor) {
+    cmd += ` assemble${_capitalize(flavor)}${_capitalize(buildType)}`
+  } else {
+    cmd += ` assemble${_capitalize(buildType)}`
+  }
   const result = await shell.exec(cmd)
   if (result.code != 0) {
     process.exit(1)
@@ -65,8 +75,12 @@ function _apkFullPath(apkName) {
   return`${process.cwd()}/app/build/outputs/apk/${apkName}`
 }
 
-function _getApkName(appName, buildType, versionName) {
-  return `${appName}-${buildType}-${versionName}.apk`
+function _getApkName(appName, buildType, flavor, versionName) {
+  if (flavor) {
+    return `${appName}-${flavor}-${buildType}-${versionName}.apk`
+  } else {
+    return `${appName}-${buildType}-${versionName}.apk`
+  }
 }
 
 function _capitalize(str) {
