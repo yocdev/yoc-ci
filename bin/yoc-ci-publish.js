@@ -2,10 +2,10 @@ const program = require('commander')
 const publishAndroid = require('../src/publisher/android')
 
 program
-  .arguments('<platform>')
-  .action((platform) => {
+  .arguments('<platform> <flavor>')
+  .action((platform, flavor) => {
     if (platform === 'android') {
-      publishAndroid().catch(e => {
+      publishAndroid(flavor).catch(e => {
         console.error(e.toString())
         process.exit(1)
       })

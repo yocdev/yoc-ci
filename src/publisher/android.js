@@ -4,8 +4,8 @@ const fetch = require('node-fetch')
 const getAndroidProperties = require('../util/getAndroidProperties')
 const crypto = require('crypto')
 
-async function publish() {
-  const properties = await getAndroidProperties('release')
+async function publish(flavor) {
+  const properties = await getAndroidProperties('release', flavor)
   if (!process.env.DOWNLOAD_HOST) {
     throw 'process.env.DOWNLOAD_HOST not found'
   }
@@ -16,7 +16,7 @@ async function publish() {
     throw 'process.env.APP_SERVICE_TOKEN not found'
   }
 
-  const fileName = `${properties.appName}-release-${properties.versionName}.apk`
+  const fileName = `${properties.appName}-${flavor}-release-${properties.versionName}.apk`
   const apkFile = path.resolve(process.cwd(), fileName)
   const sha1 = await _calSHA1(apkFile)
 

@@ -1,8 +1,8 @@
 const readProperties = require('properties-reader')
 const version = require('./version')
 
-async function getAndroidProperties(buildType) {
-  const properties = readProperties(`env/${buildType}`)
+async function getAndroidProperties(buildType, flavor) {
+  const properties = readProperties(`env/${flavor}${buildType}`)
 
   const versionName = await version.getVersionName()
   const versionCode = await version.getVersionCode()

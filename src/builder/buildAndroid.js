@@ -2,7 +2,7 @@ const shell = require('shelljs')
 const getAndroidProperties = require('../util/getAndroidProperties')
 
 async function build(buildType, flavor, options) {
-  const properties = await getAndroidProperties(buildType)
+  const properties = await getAndroidProperties(buildType, flavor)
   const { clean, skipLicense } = options
 
   await _decryptKeystore()
@@ -19,7 +19,7 @@ async function build(buildType, flavor, options) {
     buildedApkName = `app-${buildType}.apk`
   }
   const result = await shell.mv(
-    _apkFullPath(buildedApkName),
+    _apkFullPath(buildedApkName, flavor, buildType),
     apkName
   )
   if (result.code != 0) {
@@ -71,8 +71,8 @@ async function _execGradleCmd(buildType, flavor, clean) {
   }
 }
 
-function _apkFullPath(apkName) {
-  return`${process.cwd()}/app/build/outputs/apk/${apkName}`
+function _apkFullPath(apkName, flavor, buildType) {
+  return`${process.cwd()}/app/build/outputs/apk/${flavor}/${buildType}/${apkName}`
 }
 
 function _getApkName(appName, buildType, flavor, versionName) {

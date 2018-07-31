@@ -39,11 +39,11 @@ function _doUpload(bucket, file, fileName) {
   })
 }
 
-async function upload(platform, buildType) {
+async function upload(platform, buildType, flavor) {
   let appFileName
   if (platform === 'android') {
-    const { appName, versionName } = await getAndroidProperties(buildType)
-    appFileName = `${appName}-${buildType}-${versionName}.apk`
+    const { appName, versionName } = await getAndroidProperties(buildType, flavor)
+    appFileName = `${appName}-${flavor}-${buildType}-${versionName}.apk`
   }
 
   if (!appFileName) {
